@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: iq-vip-platform
+    env: node
+    plan: free
+    buildCommand: ""
+    startCommand: "node server/index.js"
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
