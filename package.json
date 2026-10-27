@@ -1,0 +1,28 @@
+{
+  "name": "iq-vip-task-platform",
+  "version": "1.0.0",
+  "description": "Complete, responsive Arabic RTL task-management and product commission platform inspired by VIP task platforms.",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/runner.js",
+    "seed": "node database/seed.js",
+    "test": "node tests/api_tests.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": [
+    "iq-vip",
+    "arabic-rtl",
+    "task-platform",
+    "commissions",
+    "vip-membership",
+    "wallet-ledger",
+    "financial-auditing"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "MIT",
+  "dependencies": {
+    "localtunnel": "^2.0.2"
+  }
+}
