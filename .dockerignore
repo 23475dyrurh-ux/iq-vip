@@ -1,0 +1,6 @@
+.git
+.env
+iq_vip.db*
+tests/
+node_modules/
+*.log
