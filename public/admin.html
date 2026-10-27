@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم الإدارية الشاملة | منصة IQ VIP</title>
+  <link rel="stylesheet" href="/css/app.css">
+  <style>
+    /* Admin Dashboard Specific Layout */
+    body {
+      background-color: #060B18;
+      padding-bottom: 0;
+    }
+    .admin-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+    .admin-sidebar {
+      width: 260px;
+      background: #0B132B;
+      border-left: 1px solid var(--navy-border);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 40;
+    }
+    .admin-brand {
+      padding: 20px;
+      border-bottom: 1px solid var(--navy-border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .admin-nav {
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .admin-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .admin-nav-item:hover, .admin-nav-item.active {
+      background: var(--bg-surface);
+      color: #FFFFFF;
+    }
+    .admin-nav-item.active {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-primary);
+      border-right: 3px solid var(--gold-primary);
+    }
+    .admin-content {
+      flex: 1;
+      padding: 24px 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+      overflow-y: auto;
+    }
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--navy-border);
+    }
+    .stats-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--navy-border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+    }
+    .kpi-lbl {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .kpi-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      direction: ltr;
+      text-align: right;
+    }
+    .data-table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--navy-border);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      margin-bottom: 24px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+    .data-table th {
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--navy-border);
+      font-weight: 700;
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--navy-border);
+      color: #FFFFFF;
+    }
+    .data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+    .status-active { background: rgba(16, 185, 129, 0.2); color: #34D399; }
+    .status-suspended { background: rgba(239, 68, 68, 0.2); color: #F87171; }
+    .status-pending { background: rgba(245, 158, 11, 0.2); color: #FBBF24; }
+    .status-approved { background: rgba(16, 185, 129, 0.2); color: #34D399; }
+    .status-rejected { background: rgba(239, 68, 68, 0.2); color: #F87171; }
+    
+    @media (max-width: 900px) {
+      .admin-wrapper { flex-direction: column; }
+      .admin-sidebar { width: 100%; height: auto; position: static; }
+      .admin-nav { flex-direction: row; flex-wrap: wrap; }
+      .admin-content { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================================= -->
+  <!-- DEDICATED ADMIN LOGIN SCREEN (مستقلة تماماً في صفحة الإدارة)             -->
+  <!-- ======================================================================= -->
+  <div id="admin-auth-screen" style="display: flex; min-height: 100vh; background: radial-gradient(circle at top, #0d1b3e 0%, #060B18 100%); align-items: center; justify-content: center; padding: 24px;">
+    <div style="width: 100%; max-width: 440px; background: #0B132B; border: 1px solid var(--navy-border); border-radius: 16px; padding: 32px 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); position: relative;">
+      
+      <!-- Gold Top Glow Accent -->
+      <div style="position: absolute; top: 0; right: 0; left: 0; height: 3px; background: linear-gradient(90deg, #D4AF37, #F9D976, #D4AF37); border-radius: 16px 16px 0 0;"></div>
+
+      <div style="text-align: center; margin-bottom: 28px;">
+        <div style="width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 14px; background: rgba(212, 175, 55, 0.12); border: 2px solid var(--gold-primary); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 900; color: var(--gold-primary); box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);">
+          IQ
+        </div>
+        <h2 style="color: #FFFFFF; font-size: 1.35rem; font-weight: 800; margin-bottom: 6px;">لوحة الإدارة والتحكم</h2>
+        <p style="color: var(--text-muted); font-size: 0.82rem;">يرجى تسجيل الدخول بحساب المشرف للوصول إلى لوحة الإدارة المستقلة</p>
+      </div>
+
+      <div id="admin-login-error" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; padding: 12px; margin-bottom: 18px; font-size: 0.82rem; color: #F87171; text-align: center;"></div>
+
+      <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
+        <div class="form-group">
+          <label class="form-label" style="font-size: 0.82rem;">البريد الإلكتروني للإدارة:</label>
+          <input id="admin-login-email" type="text" class="form-control" placeholder="admin@iqvip.com" value="admin@iqvip.com" required style="direction: ltr; text-align: right;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label class="form-label" style="font-size: 0.82rem;">كلمة المرور الإدارية:</label>
+          <input id="admin-login-password" type="password" class="form-control" placeholder="••••••••" value="Admin@123456" required style="direction: ltr; text-align: right;">
+        </div>
+
+        <button type="button" onclick="fillAdminCredentials()" class="btn btn-secondary btn-block btn-sm" style="margin-bottom: 12px; font-size: 0.8rem; padding: 8px;">
+          ⚡ ملء وتجربة بيانات المشرف تلقائياً
+        </button>
+
+        <button type="submit" id="btn-admin-login" class="btn btn-gold btn-block" style="padding: 13px; font-weight: 700; font-size: 0.95rem; box-shadow: var(--shadow-gold);">
+          دخول لوحة التحكم الإدارية
+        </button>
+      </form>
+
+      <div style="margin-top: 20px; padding: 12px; background: var(--bg-surface); border: 1px solid var(--navy-border); border-radius: var(--radius-sm); font-size: 0.76rem; color: var(--text-muted); line-height: 1.6;">
+        <div>👤 <strong>البريد:</strong> <code style="color:var(--gold-primary);">admin@iqvip.com</code></div>
+        <div>🔑 <strong>كلمة المرور:</strong> <code style="color:var(--gold-primary);">Admin@123456</code> (أو <code style="color:var(--gold-primary);">admin@123456</code> أو <code style="color:var(--gold-primary);">admin123</code>)</div>
+      </div>
+
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--navy-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+        <span style="color: var(--text-muted);">نظام الحماية المركزي</span>
+        <a href="/" target="_blank" style="color: var(--gold-primary); text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 4px;">
+          فتح واجهة المستخدم ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-wrapper" style="display: none;">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <div class="brand-icon">IQ</div>
+        <div>
+          <h2 style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF;">لوحة المشرف</h2>
+          <span style="font-size: 0.7rem; color: var(--gold-primary);">IQ VIP MANAGEMENT</span>
+        </div>
+      </div>
+
+      <nav class="admin-nav">
+        <div class="admin-nav-item active" data-section="overview">
+          <span>📊</span> <span>المؤشرات المالية والإحصائية</span>
+        </div>
+        <div class="admin-nav-item" data-section="support">
+          <span>💬</span> <span>خدمة العملاء والدعم المباشر</span>
+          <span id="admin-support-unread-badge" style="display: none; background: #EF4444; color: #FFF; font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; margin-right: auto;">0</span>
+        </div>
+        <div class="admin-nav-item" data-section="withdrawals">
+          <span>💳</span> <span>طلبات السحب المالي</span>
+        </div>
+        <div class="admin-nav-item" data-section="deposits">
+          <span>📥</span> <span>طلبات الإيداع والشحن</span>
+        </div>
+        <div class="admin-nav-item" data-section="payments">
+          <span>🏦</span> <span>إدارة طرق الدفع والسحب</span>
+        </div>
+        <div class="admin-nav-item" data-section="users">
+          <span>👥</span> <span>إدارة المستخدمين والحسابات</span>
+        </div>
+        <div class="admin-nav-item" data-section="products">
+          <span>🛍️</span> <span>كتالوج المنتجات والمهام</span>
+        </div>
+        <div class="admin-nav-item" data-section="vips">
+          <span>⭐</span> <span>مستويات VIP وقواعد العمولات</span>
+        </div>
+        <div class="admin-nav-item" data-section="ledger">
+          <span>📑</span> <span>السجل المالي الشامل (Ledger)</span>
+        </div>
+        <div class="admin-nav-item" data-section="audit">
+          <span>🛡️</span> <span>سجل التدقيق والرقابة (Audit)</span>
+        </div>
+        <div class="admin-nav-item" data-section="settings">
+          <span>⚙️</span> <span>إعدادات النظام العامة</span>
+        </div>
+      </nav>
+
+      <div style="padding: 16px; border-top: 1px solid var(--navy-border);">
+        <a href="/" target="_blank" class="btn btn-secondary btn-block btn-sm" style="margin-bottom: 8px;">
+          فتح واجهة المستخدم ↗
+        </a>
+        <button class="btn btn-danger btn-block btn-sm" onclick="adminLogout()">
+          تسجيل خروج المشرف
+        </button>
+      </div>
+    </aside>
+
+    <!-- Admin Main Content Area -->
+    <main class="admin-content">
+      <header class="admin-topbar">
+        <div>
+          <h1 id="admin-section-title" style="font-size: 1.4rem; font-weight: 800; color: #FFFFFF;">المؤشرات المالية والإحصائية</h1>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">نظام مراقبة المهام والسيولة النقدية لمنصة IQ VIP</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span id="admin-user-pill" class="vip-pill">المشرف العام</span>
+        </div>
+      </header>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 1: OVERVIEW                                               -->
+      <!-- ================================================================= -->
+      <section id="sec-overview" class="admin-sec-view">
+        <div class="stats-kpi-grid">
+          <div class="kpi-card" style="border-right: 4px solid var(--gold-primary);">
+            <div class="kpi-lbl">إجمالي المستخدمين المسجلين</div>
+            <div id="kpi-total-users" class="kpi-val">0</div>
+          </div>
+          <div class="kpi-card" style="border-right: 4px solid var(--success);">
+            <div class="kpi-lbl">إجمالي العمولات المسددة للمستخدمين</div>
+            <div id="kpi-commissions-paid" class="kpi-val val-green">$0.00</div>
+          </div>
+          <div class="kpi-card" style="border-right: 4px solid var(--warning);">
+            <div class="kpi-lbl">طلبات سحب معلقة (Pending Liability)</div>
+            <div id="kpi-pending-withdrawals" class="kpi-val val-yellow">$0.00</div>
+          </div>
+          <div class="kpi-card" style="border-right: 4px solid var(--info);">
+            <div class="kpi-lbl">المهام المنجزة اليوم</div>
+            <div id="kpi-today-tasks" class="kpi-val">0</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+          <!-- Real vs Demo Balances Card -->
+          <div class="card">
+            <h3 class="card-title">توزيع السيولة والالتزامات المالية</h3>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 14px;">
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--navy-border); padding-bottom: 8px;">
+                <span style="color: var(--text-muted);">أرصدة المستخدمين المتاحة الحقيقية:</span>
+                <span id="stat-real-available" style="font-weight: 800; color: #FFFFFF;">$0.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--navy-border); padding-bottom: 8px;">
+                <span style="color: var(--text-muted);">إجمالي السحوبات الحقيقية المسواة:</span>
+                <span id="stat-real-withdrawn" style="font-weight: 800; color: var(--success);">$0.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-muted);">أرصدة المحاكاة التجريبية (Demo):</span>
+                <span id="stat-demo-balance" style="font-weight: 800; color: var(--warning);">$0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIP Breakdown Card -->
+          <div class="card">
+            <h3 class="card-title">توزيع أعضاء مستويات VIP</h3>
+            <div id="vip-dist-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 2: WITHDRAWAL REQUESTS                                    -->
+      <!-- ================================================================= -->
+      <section id="sec-withdrawals" class="admin-sec-view" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm active" onclick="loadWithdrawals(null)">الكل</button>
+            <button class="btn btn-secondary btn-sm" onclick="loadWithdrawals('PENDING')">المعلقة فقط</button>
+            <button class="btn btn-secondary btn-sm" onclick="loadWithdrawals('APPROVED')">المعتمدة</button>
+            <button class="btn btn-secondary btn-sm" onclick="loadWithdrawals('REJECTED')">المرفوضة</button>
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="loadWithdrawals()">تحديث القائمة</button>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>كود السحب</th>
+                <th>المستخدم</th>
+                <th>المبلغ الإجمالي</th>
+                <th>الرسوم</th>
+                <th>الصافي للتحويل</th>
+                <th>وسيلة السحب</th>
+                <th>بيانات الحساب / المحفظة</th>
+                <th>الحالة</th>
+                <th>التاريخ</th>
+                <th>الإجراء</th>
+              </tr>
+            </thead>
+            <tbody id="withdrawals-table-body">
+              <tr><td colspan="10" style="text-align:center;">جاري تحميل طلبات السحب...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 2.0: DEPOSITS MANAGEMENT (إدارة طلبات شحن الرصيد والإيداع) -->
+      <!-- ================================================================= -->
+      <section id="sec-deposits" class="admin-sec-view" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm active" onclick="loadDeposits(null)">الكل</button>
+            <button class="btn btn-secondary btn-sm" onclick="loadDeposits('PENDING')">المعلقة فقط</button>
+            <button class="btn btn-secondary btn-sm" onclick="loadDeposits('APPROVED')">المعتمدة</button>
+            <button class="btn btn-secondary btn-sm" onclick="loadDeposits('REJECTED')">المرفوضة</button>
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="loadDeposits()">تحديث القائمة</button>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>كود الإيداع</th>
+                <th>المستخدم</th>
+                <th>المبلغ</th>
+                <th>وسيلة الدفع</th>
+                <th>رقم المعاملة / الحوالة (TxID)</th>
+                <th>الحالة</th>
+                <th>التاريخ</th>
+                <th>الإجراء</th>
+              </tr>
+            </thead>
+            <tbody id="deposits-table-body">
+              <tr><td colspan="8" style="text-align:center;">جاري تحميل طلبات الإيداع...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 2.1: PAYMENT METHODS MANAGEMENT (إدارة طرق الدفع والسحب)   -->
+      <!-- ================================================================= -->
+      <section id="sec-payments" class="admin-sec-view" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h3 style="color: #FFFFFF; font-size: 1.1rem;">إدارة طرق الدفع والسحب المتاحة للمستخدمين</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">أضف وفعّل محافظ USDT، زين كاش، كي كارد، أو حسابات بنكية مخصصة للسحب والإيداع.</p>
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="openAddPaymentModal()">
+            + إضافة وسيلة دفع جديدة
+          </button>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المعرف</th>
+                <th>اسم وسيلة الدفع</th>
+                <th>الرمز / الشبكة</th>
+                <th>النوع</th>
+                <th>نسبة الرسوم</th>
+                <th>الحد الأدنى</th>
+                <th>الحد الأقصى</th>
+                <th>الحالة</th>
+                <th>إجراءات إدارية</th>
+              </tr>
+            </thead>
+            <tbody id="payments-table-body">
+              <tr><td colspan="9" style="text-align:center;">جاري تحميل وسائل الدفع...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section id="sec-users" class="admin-sec-view" style="display: none;">
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+          <input id="user-search-input" type="text" class="form-control" placeholder="بحث بالاسم أو البريد الإلكتروني أو الهاتف..." onkeyup="if(event.key==='Enter') searchUsers()">
+          <button class="btn btn-gold" onclick="searchUsers()">بحث</button>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المعرف</th>
+                <th>الاسم الكامل</th>
+                <th>البريد والهاتف</th>
+                <th>مستوى VIP</th>
+                <th>الرصيد المتاح</th>
+                <th>الأرباح الإجمالية</th>
+                <th>نوع الحساب</th>
+                <th>الحالة</th>
+                <th>إجراءات إدارية</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <tr><td colspan="9" style="text-align:center;">جاري تحميل المستخدمين...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 4: PRODUCT CATALOG                                        -->
+      <!-- ================================================================= -->
+      <section id="sec-products" class="admin-sec-view" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="color: #FFFFFF; font-size: 1.1rem;">قائمة منتجات المهام الترويجية</h3>
+          <button class="btn btn-gold btn-sm" onclick="openAddProductModal()">
+            + إضافة منتج جديد
+          </button>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المعرف</th>
+                <th>صورة المنتج</th>
+                <th>اسم المنتج</th>
+                <th>التصنيف</th>
+                <th>السعر التقديري</th>
+                <th>أدنى مستوى VIP</th>
+                <th>التقييم</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="products-table-body">
+              <tr><td colspan="9" style="text-align:center;">جاري تحميل المنتجات...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 5: VIP TIERS CONFIG                                       -->
+      <!-- ================================================================= -->
+      <section id="sec-vips" class="admin-sec-view" style="display: none;">
+        <div style="margin-bottom: 16px;">
+          <h3 style="color:#FFFFFF; font-size:1.1rem;">تعديل شروط ونسب عمولات مستويات VIP</h3>
+          <p style="font-size:0.8rem; color:var(--text-muted);">تحكم في عدد المهام اليومية، نسبة العمولة، والحد الأدنى للترقية لكل مستوى.</p>
+        </div>
+        <div id="admin-vip-cards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 6: FINANCIAL LEDGER                                       -->
+      <!-- ================================================================= -->
+      <section id="sec-ledger" class="admin-sec-view" style="display: none;">
+        <div style="margin-bottom: 16px;">
+          <h3 style="color:#FFFFFF; font-size:1.1rem;">السجل المحاسبي الشامل غير القابل للتعديل</h3>
+          <p style="font-size:0.8rem; color:var(--text-muted);">يقيد كل حركة مالية تمت على المنصة مع أرصدة ما قبل وما بعد العملية.</p>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المعرف</th>
+                <th>المستخدم</th>
+                <th>نوع القيد</th>
+                <th>المبلغ</th>
+                <th>الرصيد السابق</th>
+                <th>الرصيد اللاحق</th>
+                <th>البيان والتفاصيل</th>
+                <th>نوع الحساب</th>
+                <th>التاريخ والوقت</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-table-body">
+              <tr><td colspan="9" style="text-align:center;">جاري تحميل القيود المحاسبية...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 7: AUDIT LOGS                                             -->
+      <!-- ================================================================= -->
+      <section id="sec-audit" class="admin-sec-view" style="display: none;">
+        <div style="margin-bottom: 16px;">
+          <h3 style="color:#FFFFFF; font-size:1.1rem;">سجل العمليات والرقابة الإدارية (Audit Trail)</h3>
+          <p style="font-size:0.8rem; color:var(--text-muted);">توثيق رسمي لأي إجراء إداري تم تنفيذه بواسطة المشرفين مع عنوان IP والطابع الزمني.</p>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المعرف</th>
+                <th>المشرف</th>
+                <th>الإجراء الإداري</th>
+                <th>الهدف</th>
+                <th>ملاحظات وتفاصيل التغيير</th>
+                <th>عنوان IP</th>
+                <th>التاريخ والوقت</th>
+              </tr>
+            </thead>
+            <tbody id="audit-table-body">
+              <tr><td colspan="7" style="text-align:center;">جاري تحميل سجل التدقيق...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SECTION 8: SYSTEM SETTINGS                                        -->
+      <!-- ================================================================= -->
+      <section id="sec-settings" class="admin-sec-view" style="display: none;">
+        <div class="card" style="max-width: 600px;">
+          <h3 class="card-title">إعدادات المنصة وقواعد التشغيل</h3>
+          <form onsubmit="saveSystemSettings(event)">
+            <div class="form-group">
+              <label class="form-label">اسم / رمز عملة الموقع الرسمية (مثل: USDT أو IQD أو د.ع أو $):</label>
+              <input id="set-platform-currency" type="text" class="form-control" placeholder="USDT" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">اشتراط إكمال جميع المهام اليومية للسماح بالسحب:</label>
+              <select id="set-require-tasks" class="form-control">
+                <option value="true">مفعل (إلزامي إكمال كافة المهام اليومية لتقديم طلب سحب)</option>
+                <option value="false">معطل (السماح بالسحب في أي وقت)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">مدة معالجة المهمة بالثواني (30 ثانية افتراضياً):</label>
+              <input id="set-task-duration" type="number" min="1" max="300" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">الحد الأدنى لطلب السحب:</label>
+              <input id="set-min-withdraw" type="number" step="0.1" min="1" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">نسبة رسوم السحب الافتراضية (%):</label>
+              <input id="set-fee-pct" type="number" step="0.1" min="0" max="20" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">اسم المنصة الرسمي:</label>
+              <input id="set-platform-name" type="text" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-gold btn-block" style="margin-top: 18px;">
+              حفظ وتطبيق الإعدادات
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- SECTION: LIVE SUPPORT & CUSTOMER CHATS (خدمة العملاء والدعم)        -->
+      <!-- ================================================================= -->
+      <section id="sec-support" class="admin-sec-view" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="btn btn-gold btn-sm active-supp-filter" onclick="filterSupportConversations('ALL', this)">جميع المحادثات</button>
+            <button class="btn btn-secondary btn-sm" onclick="filterSupportConversations('UNREAD', this)">بانتظار الرد (جديد)</button>
+            <button class="btn btn-secondary btn-sm" onclick="filterSupportConversations('OPEN', this)">مفتوحة</button>
+            <button class="btn btn-secondary btn-sm" onclick="filterSupportConversations('RESOLVED', this)">تم الحل</button>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" onclick="loadAdminSupportConversations(true)">
+              ⟳ تحديث المحادثات
+            </button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 360px 1fr; gap: 18px; min-height: 650px; height: calc(85vh - 120px);">
+          <!-- Conversations Sidebar -->
+          <div class="card" style="display: flex; flex-direction: column; padding: 14px; overflow: hidden;">
+            <div style="margin-bottom: 12px;">
+              <input id="support-search-input" type="text" class="form-control" placeholder="🔍 بحث بالاسم أو البريد..." oninput="searchSupportConversations(this.value)" style="font-size: 0.82rem; padding: 8px 12px;">
+            </div>
+            <div id="admin-conversations-list" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; padding-right: 2px;">
+              <p style="text-align: center; color: var(--text-muted); padding: 30px;">جاري تحميل المحادثات...</p>
+            </div>
+          </div>
+
+          <!-- Active Conversation & Thread View -->
+          <div class="card" style="display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+            <!-- Placeholder when no conversation is selected -->
+            <div id="support-empty-state" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center;">
+              <div style="font-size: 3rem; margin-bottom: 12px;">💬</div>
+              <h3 style="color: #FFFFFF; font-size: 1.1rem; margin-bottom: 6px;">مركز خدمة العملاء والدعم المباشر</h3>
+              <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 400px; line-height: 1.5;">
+                اختر محادثة من القائمة الجانبية للرد على المستخدم، مراجعة المشاكل، أو إلغاء تجميد حسابه مباشرة.
+              </p>
+            </div>
+
+            <!-- Active Thread Box -->
+            <div id="support-active-thread" style="display: none; flex-direction: column; height: 100%;">
+              <!-- Thread Header: User details & actions -->
+              <div style="padding: 14px 18px; background: #0F1A30; border-bottom: 1px solid var(--navy-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <h3 id="thread-user-name" style="margin: 0; font-size: 1.05rem; color: #FFFFFF; font-weight: 800;">اسم المستخدم</h3>
+                    <span id="thread-user-status" class="status-badge status-active">نشط</span>
+                    <span id="thread-vip-tag" class="vip-pill" style="font-size: 0.72rem;">VIP1</span>
+                  </div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; display: flex; gap: 14px;">
+                    <span id="thread-user-contact">contact@domain.com</span>
+                    <span id="thread-user-balance" style="color: #34D399; font-weight: 700;">الرصيد: $0.00</span>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button id="btn-toggle-suspend-user" class="btn btn-secondary btn-sm" onclick="toggleUserSuspensionFromSupport()" style="font-size: 0.78rem;">
+                    🔓 فك التجميد
+                  </button>
+                  <button id="btn-toggle-ticket-status" class="btn btn-secondary btn-sm" onclick="toggleTicketStatus()" style="font-size: 0.78rem;">
+                    ✓ إغلاق كـ "تم الحل"
+                  </button>
+                </div>
+              </div>
+
+              <!-- Messages List -->
+              <div id="thread-messages-list" style="flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; background: radial-gradient(circle at top, rgba(16, 26, 50, 0.4) 0%, rgba(7, 13, 30, 0.95) 100%);">
+                <!-- Chat bubbles rendered dynamically -->
+              </div>
+
+              <!-- Quick Canned Replies -->
+              <div style="padding: 8px 14px; background: #0B132B; border-top: 1px solid var(--navy-border); display: flex; gap: 6px; overflow-x: auto;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillAdminQuickReply('تمت مراجعة حسابك وإلغاء تجميده بنجاح. يمكنك الآن تسجيل الدخول والمتابعة.')" style="font-size: 0.72rem; white-space: nowrap; padding: 4px 10px;">
+                  🔓 تم رفع التجميد بنجاح
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillAdminQuickReply('يرجى شحن الحد الأدنى لرصيد عضويتك VIP لتفعيل حسابك والبدء في استلام المهام.')" style="font-size: 0.72rem; white-space: nowrap; padding: 4px 10px;">
+                  💳 تفعيل العضوية
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillAdminQuickReply('طلب السحب الخاص بك قيد المعالجة من قبل القسم المالي وسيتم التحويل خلال دقائق.')" style="font-size: 0.72rem; white-space: nowrap; padding: 4px 10px;">
+                  💰 حالة طلب السحب
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillAdminQuickReply('أهلاً بك، تم استلام استفسارك وجاري العمل على حله فوراً.')" style="font-size: 0.72rem; white-space: nowrap; padding: 4px 10px;">
+                  👋 تم الاستلام
+                </button>
+              </div>
+
+              <!-- Reply Input Form -->
+              <form onsubmit="handleSendAdminReply(event)" style="padding: 12px 16px; background: #0F1A30; border-top: 1px solid var(--navy-border); display: flex; gap: 10px; align-items: center;">
+                <input id="admin-reply-input" type="text" class="form-control" placeholder="اكتب رد الدعم الفني هنا..." autocomplete="off" required style="flex: 1; font-size: 0.88rem;">
+                <button id="btn-admin-reply-send" type="submit" class="btn btn-gold btn-sm" style="padding: 10px 18px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                  <span>إرسال الرد</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Product Modal -->
+  <div id="product-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="product-modal-title" class="modal-title">إضافة منتج جديد</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('product-modal').classList.remove('active')">&times;</button>
+      </div>
+      <form onsubmit="saveProduct(event)">
+        <input type="hidden" id="prod-id">
+        <div class="form-group">
+          <label class="form-label">اسم المنتج باللغة العربية:</label>
+          <input id="prod-title" type="text" class="form-control" placeholder="ساعة فاخرة / عطر ملكي" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">وصف المنتج:</label>
+          <textarea id="prod-desc" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">السعر التقديري ($ USDT):</label>
+          <input id="prod-price" type="number" step="0.01" min="1" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">التصنيف:</label>
+          <input id="prod-cat" type="text" class="form-control" placeholder="إلكترونيات / أزياء / عطور" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">رابط صورة المنتج (URL):</label>
+          <input id="prod-img" type="url" class="form-control" placeholder="https://images.unsplash.com/..." required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">أدنى مستوى VIP مؤهل لتنفيذ المهمة:</label>
+          <select id="prod-vip" class="form-control">
+            <option value="1">VIP 1</option>
+            <option value="2">VIP 2</option>
+            <option value="3">VIP 3</option>
+            <option value="4">VIP 4</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-gold btn-block">حفظ المنتج</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- User Adjustment Modal -->
+  <div id="user-adjust-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">تعديل بيانات المستخدم</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('user-adjust-modal').classList.remove('active')">&times;</button>
+      </div>
+      <form onsubmit="submitUserAdjustment(event)">
+        <input type="hidden" id="adj-user-id">
+        <div class="form-group">
+          <label class="form-label">مستوى العضوية VIP:</label>
+          <select id="adj-vip-select" class="form-control">
+            <option value="1">VIP 1</option>
+            <option value="2">VIP 2</option>
+            <option value="3">VIP 3</option>
+            <option value="4">VIP 4</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">حالة الحساب:</label>
+          <select id="adj-status-select" class="form-control">
+            <option value="ACTIVE">نشط (Active)</option>
+            <option value="SUSPENDED">مجمد (Suspended)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">تعديل رصيد يدوي ($ USDT - موجب للإضافة، سالب للخصم):</label>
+          <input id="adj-balance-input" type="number" step="0.01" class="form-control" placeholder="0.00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">سبب التعديل الإداري (يسجل في دفتر التدقيق):</label>
+          <input id="adj-reason-input" type="text" class="form-control" placeholder="مكافأة ترويجية / تصحيح حساب" required>
+        </div>
+        <button type="submit" class="btn btn-gold btn-block">تطبيق التعديلات وحفظ القيد</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Payment Method Modal -->
+  <div id="payment-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="payment-modal-title" class="modal-title">إضافة وسيلة دفع وسحب جديدة</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('payment-modal').classList.remove('active')">&times;</button>
+      </div>
+      <form onsubmit="savePaymentMethod(event)">
+        <input type="hidden" id="pay-id">
+        <div class="form-group">
+          <label class="form-label">الاسم التجاري لوسيلة الدفع (بالعربية):</label>
+          <input id="pay-name" type="text" class="form-control" placeholder="زين كاش / USDT TRC-20 / كي كارد" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">الرمز المميز (Code بالإنجليزية بدون مسافات):</label>
+          <input id="pay-code" type="text" class="form-control" placeholder="ZAIN_CASH / USDT_TRC20" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">نوع وسيلة الدفع:</label>
+          <select id="pay-type" class="form-control">
+            <option value="CRYPTO">عملات رقمية مشفرة (Crypto)</option>
+            <option value="E_WALLET">محفظة إلكترونية محلية (E-Wallet)</option>
+            <option value="CARD">بطاقة مصرفية / دفع إلكتروني (Card)</option>
+            <option value="BANK">حوالة بنكية مباشرة (Bank Transfer)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">تعليمات وإرشادات السحب للمستخدم:</label>
+          <textarea id="pay-instructions" class="form-control" rows="2" placeholder="أدخل رقم المحفظة / عنوان TRC20 / رقم الآيبان"></textarea>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label">نسبة الرسوم (%):</label>
+            <input id="pay-fee" type="number" step="0.1" class="form-control" value="2.0" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">الحد الأدنى للسحب:</label>
+            <input id="pay-min" type="number" step="0.1" class="form-control" value="20.0" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">الحد الأقصى للسحب:</label>
+          <input id="pay-max" type="number" step="1" class="form-control" value="50000" required>
+        </div>
+        <button type="submit" class="btn btn-gold btn-block">حفظ وسيلة الدفع</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="app-toast" class="toast-box"></div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>
