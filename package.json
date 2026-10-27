@@ -4,7 +4,7 @@
   "description": "Complete, responsive Arabic RTL task-management and product commission platform inspired by VIP task platforms.",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/runner.js",
+    "start": "node server/index.js",
     "seed": "node database/seed.js",
     "test": "node tests/api_tests.js"
   },
