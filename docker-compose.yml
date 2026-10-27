@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  iq-vip-app:
+    build: .
+    container_name: iq_vip_platform
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - JWT_SECRET=iq-vip-secure-production-secret-change-me-in-production
+      - DB_PATH=/app/data/iq_vip.db
+    volumes:
+      - ./data:/app/data
