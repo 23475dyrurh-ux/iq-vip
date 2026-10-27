@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>منصة المهام الذكية والعمولات | IQ VIP Platform</title>
+  <link rel="stylesheet" href="/css/app.css">
+  <meta name="theme-color" content="#070D1E">
+  <meta name="description" content="منصة مهام ترويجية ذكية - مهام يومية سريعة وعمولات فورية مع سجل مالي محاسبي محصن وشروط سحب واضحة.">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Top Header (No Admin links or demo exposure) -->
+    <header class="top-header">
+      <div class="brand-wrapper">
+        <div class="brand-icon">IQ</div>
+        <div>
+          <h1 class="brand-title">IQ VIP PLATFORM</h1>
+          <span class="brand-sub">منصة المهام الترويجية والعمولات</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span id="header-vip-tag" class="vip-pill" style="display: none;">VIP1</span>
+      </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- SCREEN 1: HOME DASHBOARD                                              -->
+    <!-- ===================================================================== -->
+    <main id="screen-home" class="view-screen active">
+      <!-- Greeting Card -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">مرحباً بك،</span>
+          <h2 id="home-user-name" style="font-size: 1.25rem; font-weight: 800; color: #FFFFFF;">المستخدم الكريم</h2>
+        </div>
+        <span id="home-vip-badge" class="vip-pill">المستوى البرونزي VIP1</span>
+      </div>
+
+      <!-- Financial Balance Card -->
+      <div class="card card-gold">
+        <div class="balance-card-header">
+          <div>
+            <span class="balance-title">الرصيد المتاح للسحب</span>
+            <div class="balance-amount">
+              <span id="home-available-balance">0.00</span>
+              <span id="home-currency-symbol" class="currency-tag">USDT</span>
+            </div>
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="switchTab('tasks')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            تنفيذ مهمة
+          </button>
+        </div>
+
+        <div class="balance-grid">
+          <div class="balance-stat-item">
+            <span class="balance-stat-label">الرصيد المعلق (قيد المعالجة)</span>
+            <span id="home-pending-balance" class="balance-stat-val val-yellow">0.00</span>
+          </div>
+          <div class="balance-stat-item">
+            <span class="balance-stat-label">إجمالي العمولات المكتسبة</span>
+            <span id="home-earned-balance" class="balance-stat-val val-green">0.00</span>
+          </div>
+          <div class="balance-stat-item">
+            <span class="balance-stat-label">أرباح المهام اليوم</span>
+            <span id="home-today-earnings" class="balance-stat-val val-green">0.00</span>
+          </div>
+          <div class="balance-stat-item">
+            <span class="balance-stat-label">إجمالي السحوبات المسواة</span>
+            <span id="home-withdrawn-balance" class="balance-stat-val" style="color:var(--text-muted);">0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="quick-actions-row">
+        <button class="btn btn-secondary" onclick="openWithdrawModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+          طلب سحب أرباح
+        </button>
+        <button class="btn btn-secondary" onclick="openTransactionsModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          سجل المعاملات
+        </button>
+      </div>
+
+      <!-- Account/Membership Activation Banner (When Balance < Tier Minimum) -->
+      <div id="home-activation-banner" class="card" style="display: none; border: 1px solid rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08); padding: 14px 16px; margin-bottom: 16px;">
+        <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <span class="pulse-dot" style="background: #FBBF24; width: 10px; height: 10px;"></span>
+            <div>
+              <strong id="activation-banner-title" style="color: #FBBF24; font-size: 0.88rem; display: block;">العضوية بانتظار التفعيل</strong>
+              <span id="activation-banner-desc" style="color: var(--text-muted); font-size: 0.74rem;">اشحن رصيدك بالحد الأدنى المطلوب لتفعيل عضوية حسابك والبدء بالمهام وجني العمولات.</span>
+            </div>
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="openDepositModal()" style="white-space: nowrap; font-size: 0.8rem; padding: 8px 14px;">تفعيل العضوية الآن (إيداع)</button>
+        </div>
+      </div>
+
+      <!-- Daily Tasks Progress Card & Withdrawal Eligibility Condition -->
+      <div class="card">
+        <div class="task-stats-bar">
+          <span style="font-weight: 700; font-size: 0.9rem;">مهام اليوم المنجزة (شرط السحب)</span>
+          <span id="home-task-progress-pct" style="font-weight: 800; color: var(--gold-primary);">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="home-progress-bar" class="progress-fill" style="width: 0%;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+          <span id="home-task-progress-text" style="font-size: 0.78rem; color: var(--text-muted);">
+            0 من أصل 5 مهام اليوم
+          </span>
+          <span id="home-withdrawal-eligibility-badge" class="status-badge status-pending" style="font-size: 0.72rem;">
+            السحب مقفل حتى إكمال المهام
+          </span>
+        </div>
+      </div>
+
+      <!-- Withdrawal Condition Notice Box -->
+      <div class="card" style="border: 1px solid rgba(212, 175, 55, 0.3); background: rgba(212, 175, 55, 0.05);">
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <div style="color: var(--gold-primary); font-size: 1.3rem;">⚡</div>
+          <div>
+            <h4 style="color: var(--gold-primary); font-size: 0.88rem; margin-bottom: 4px;">شرط السحب الإلزامي</h4>
+            <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">
+              لتقديم طلب سحب مالي، يجب على المستخدم أولاً إكمال جميع المهام اليومية المخصصة لمستوى عضويته بالكامل. بعد إتمام مهام اليوم، يتم تفعيل إمكانية السحب فوراً إلى وسيلة الدفع التي تختارها.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- SCREEN 2: TASK SYSTEM                                                 -->
+    <!-- ===================================================================== -->
+    <section id="screen-tasks" class="view-screen">
+      <div style="margin-bottom: 14px;">
+        <h2 style="font-size: 1.2rem; font-weight: 800; color: #FFFFFF;">نظام المهام والترويج</h2>
+        <p style="font-size: 0.78rem; color: var(--text-muted);">
+          أكمل مهامك اليومية لفتح إمكانية السحب وكسب العمولات المباشرة في محفظتك.
+        </p>
+      </div>
+
+      <div id="task-content-box">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SCREEN 3: VIP TIERS                                                   -->
+    <!-- ===================================================================== -->
+    <section id="screen-vip" class="view-screen">
+      <div style="margin-bottom: 14px;">
+        <h2 style="font-size: 1.2rem; font-weight: 800; color: #FFFFFF;">مستويات العضوية (VIP Tiers)</h2>
+        <p style="font-size: 0.78rem; color: var(--text-muted);">
+          شروط واضحة ومكافآت شفافة لكل مستوى، من VIP1 إلى VIP4 بدون وعود بأرباح خيالية.
+        </p>
+      </div>
+
+      <div id="vip-levels-container">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SCREEN 4: WALLET & FINANCIAL LEDGER                                   -->
+    <!-- ===================================================================== -->
+    <section id="screen-wallet" class="view-screen">
+      <div style="margin-bottom: 14px;">
+        <h2 style="font-size: 1.2rem; font-weight: 800; color: #FFFFFF;">المحفظة والسجل المالي</h2>
+        <p style="font-size: 0.78rem; color: var(--text-muted);">
+          سجل محاسبي محصن يقيد كافة العمولات، طلبات السحب، وحركات الرصيد.
+        </p>
+      </div>
+
+      <!-- Luxury VIP Financial Virtual Card -->
+      <div class="luxury-vip-card">
+        <div class="card-shine-overlay"></div>
+        
+        <div class="card-top-row">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="card-brand-title">IQ VIP PLATINUM CARD</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="card-user-vip" class="vip-pill" style="padding: 2px 8px; font-size: 0.68rem;">VIP1</span>
+            <!-- Contactless Icon -->
+            <svg class="card-contactless-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8.5 16.5a5 5 0 0 1 0-7"></path><path d="M12 19a8.5 8.5 0 0 0 0-14"></path><path d="M15.5 21.5a12 12 0 0 0 0-21"></path></svg>
+          </div>
+        </div>
+
+        <div class="card-mid-row">
+          <div class="card-emv-chip"></div>
+          <div class="card-balance-display">
+            <span class="card-balance-lbl">الرصيد المتاح للسحب الفوري</span>
+            <div class="card-balance-val">
+              <span id="wallet-available-val">0.00</span>
+              <span id="wallet-currency-symbol" style="font-size: 0.9rem; color: var(--gold-primary);">USDT</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div id="card-number-display" class="card-number-display">4892 •••• •••• 7788</div>
+          <div class="card-bottom-row">
+            <div class="card-holder-info">
+              <span class="card-holder-lbl">حامل البطاقة (Cardholder)</span>
+              <span id="card-holder-name" class="card-holder-name">المستخدم</span>
+            </div>
+            <div class="card-expiry-wrap">
+              <span class="card-holder-lbl">الصلاحية (EXP)</span>
+              <span class="card-expiry-val">12/29</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions: Deposit, Deposit History, Withdraw, Transactions -->
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px;">
+        <button class="btn btn-gold btn-sm" onclick="openDepositModal()" style="padding: 11px 8px; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+          إيداع وشحن
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="openDepositHistoryModal()" style="padding: 11px 8px; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          سجل الإيداعات وحالتها
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="openWithdrawModal()" style="padding: 11px 8px; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+          طلب سحب
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="openTransactionsModal()" style="padding: 11px 8px; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line></svg>
+          سجل الحركات المالية
+        </button>
+      </div>
+
+      <!-- Financial Statistics Card -->
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="balance-grid">
+          <div class="balance-stat-item">
+            <span class="balance-stat-label">الرصيد المعلق</span>
+            <span id="wallet-pending-val" class="balance-stat-val val-yellow">0.00</span>
+          </div>
+          <div class="balance-stat-item">
+            <span class="balance-stat-label">إجمالي العمولات المكتسبة</span>
+            <span id="wallet-earned-val" class="balance-stat-val val-green">0.00</span>
+          </div>
+          <div class="balance-stat-item">
+            <span class="balance-stat-label">إجمالي السحوبات المعتمدة</span>
+            <span id="wallet-withdrawn-val" class="balance-stat-val" style="color:var(--text-muted);">0.00</span>
+          </div>
+          <div class="balance-stat-item">
+            <span class="balance-stat-label">أهلية السحب اليوم</span>
+            <span id="wallet-eligibility-text" class="balance-stat-val val-yellow" style="font-size: 0.82rem;">يرجى إكمال المهام</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity & History Card with Tabs (Deposits, Transactions, Withdrawals) -->
+      <div class="card">
+        <div class="wallet-tabs-bar">
+          <button id="wallet-subtab-deposits" class="wallet-tab-btn active" onclick="switchWalletTab('deposits')">
+            <span>سجل الإيداعات</span>
+            <span id="pending-deposit-badge" class="badge-status badge-status-pending" style="display:none; padding:1px 5px; font-size:0.65rem;">0</span>
+          </button>
+          <button id="wallet-subtab-transactions" class="wallet-tab-btn" onclick="switchWalletTab('transactions')">
+            <span>القيود المالية</span>
+          </button>
+          <button id="wallet-subtab-withdrawals" class="wallet-tab-btn" onclick="switchWalletTab('withdrawals')">
+            <span>طلبات السحب</span>
+          </button>
+        </div>
+
+        <div id="wallet-activity-container" class="history-list">
+          <p style="text-align: center; color: var(--text-muted); padding: 20px;">جاري تحميل سجل الإيداعات...</p>
+        </div>
+
+        <div style="margin-top: 12px; text-align: center; border-top: 1px solid var(--navy-border); padding-top: 10px;">
+          <button id="wallet-view-all-btn" class="btn btn-secondary btn-sm btn-block" onclick="openActiveWalletModal()">
+            عرض السجل بالتفصيل الكامل ↗
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SCREEN 5: USER PROFILE                                                -->
+    <!-- ===================================================================== -->
+    <section id="screen-profile" class="view-screen">
+      <div class="card" style="text-align: center; padding: 28px 16px;">
+        <div style="width: 72px; height: 72px; background: var(--gold-gradient); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; color: #070D1E; box-shadow: var(--shadow-gold);">
+          VIP
+        </div>
+        <h2 id="profile-name" style="color: #FFFFFF; font-size: 1.2rem; font-weight: 800;">-</h2>
+        <span id="profile-vip" class="vip-pill" style="display: inline-flex; margin-top: 6px;">VIP1</span>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">معلومات الحساب والتوثيق</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--navy-border); padding-bottom: 8px;">
+            <span style="color: var(--text-muted);">البريد الإلكتروني:</span>
+            <span id="profile-email" style="font-weight: 700; color: #FFFFFF;">-</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--navy-border); padding-bottom: 8px;">
+            <span style="color: var(--text-muted);">رقم الهاتف:</span>
+            <span id="profile-phone" style="font-weight: 700; color: #FFFFFF; direction: ltr;">-</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--navy-border); padding-bottom: 8px;">
+            <span style="color: var(--text-muted);">كود الإحالة الخاص بك:</span>
+            <span id="profile-referral" style="font-weight: 800; color: var(--gold-primary);">VIP-0000</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">حالة التوثيق:</span>
+            <span style="font-weight: 700; color: var(--success);">حساب موثق ونشط</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <a id="profile-admin-link" href="/admin" target="_blank" class="btn btn-gold btn-block" style="display: none; margin-bottom: 10px; text-decoration: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          فتح لوحة الإدارة في صفحة منفصلة ↗
+        </a>
+        <button class="btn btn-secondary btn-block" style="margin-bottom: 10px;" onclick="openTransactionsModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          عرض سجل المعاملات المالية الكامل
+        </button>
+        <button class="btn btn-danger btn-block" onclick="logout()">
+          تسجيل الخروج من الحساب
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- BOTTOM NAVIGATION BAR                                                 -->
+    <!-- ===================================================================== -->
+    <nav class="bottom-nav">
+      <a href="#home" class="nav-tab active" data-tab="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>الرئيسية</span>
+      </a>
+      <a href="#tasks" class="nav-tab" data-tab="tasks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span>المهام</span>
+      </a>
+      <a href="#vip" class="nav-tab" data-tab="vip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <span>VIP</span>
+      </a>
+      <a href="#wallet" class="nav-tab" data-tab="wallet">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="12" x2="18" y2="12"></line></svg>
+        <span>المحفظة</span>
+      </a>
+      <a href="#profile" class="nav-tab" data-tab="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>حسابي</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL: DEPOSIT / BALANCE RECHARGE (شحن المحفظة والإيداع)                  -->
+  <!-- ======================================================================= -->
+  <div id="deposit-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">شحن رصيد المحفظة (إيداع)</h3>
+        <button class="modal-close-btn" onclick="closeDepositModal()">&times;</button>
+      </div>
+
+      <form id="deposit-form" onsubmit="submitDeposit(event)">
+        <div class="form-group">
+          <label class="form-label">اختر وسيلة الدفع / التحويل:</label>
+          <select id="deposit-method-select" class="form-control" onchange="onDepositMethodChange()" required>
+            <!-- Loaded dynamically -->
+          </select>
+        </div>
+
+        <!-- Dynamic Destination Address & Instructions -->
+        <div id="deposit-info-box" style="background: var(--bg-surface); border: 1px solid var(--navy-border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 14px;">
+          <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 4px;">عنوان / حساب التحويل المعتمد للمنصة:</span>
+          <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 8px;">
+            <input id="deposit-address-display" type="text" class="form-control" readonly style="font-family: monospace; font-size: 0.78rem; background: var(--bg-input); padding: 8px;" value="TJz8849201948201948201TRC20">
+            <button type="button" class="btn btn-gold btn-sm" onclick="copyDepositAddress()" style="white-space: nowrap;">نسخ</button>
+          </div>
+          <p id="deposit-instructions-text" style="font-size: 0.72rem; color: var(--gold-primary); line-height: 1.4; margin: 0;">
+            يرجى إرسال المبلغ المحدد إلى العنوان أعلاه، ثم إدخال رقم العملية (TxID) أدناه للتأكيد الفوري.
+          </p>
+        </div>
+
+        <!-- Quick Amount Pills -->
+        <label class="form-label">مبلغ الإيداع:</label>
+        <div class="quick-amount-grid">
+          <button type="button" class="quick-amount-pill" onclick="setQuickDepositAmount(25)">+25</button>
+          <button type="button" class="quick-amount-pill" onclick="setQuickDepositAmount(50)">+50</button>
+          <button type="button" class="quick-amount-pill" onclick="setQuickDepositAmount(100)">+100</button>
+          <button type="button" class="quick-amount-pill" onclick="setQuickDepositAmount(250)">+250</button>
+        </div>
+
+        <div class="form-group">
+          <input id="deposit-amount-input" type="number" step="0.01" min="1" class="form-control" placeholder="أدخل مبلغ الشحن..." required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">رقم الحوالة أو معرف المعاملة (TxID / كود الإشعار):</label>
+          <input id="deposit-ref-input" type="text" class="form-control" placeholder="أدخل رقم العملية أو كود الإشعار للتأكيد" required>
+        </div>
+
+        <button id="btn-submit-deposit" type="submit" class="btn btn-gold btn-block">تأكيد وإرسال طلب الشحن</button>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--navy-border);">
+          <span style="font-size: 0.74rem; color: var(--text-muted);">تريد متابعة طلباتك السابقة؟</span>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeDepositModal(); openDepositHistoryModal();" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            سجل طلبات الإيداع وحالتها ↗
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL: WITHDRAWAL REQUEST WITH MANDATORY TASK COMPLETION CHECK          -->
+  <!-- ======================================================================= -->
+  <div id="withdraw-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">طلب سحب رصيد أرباح</h3>
+        <button class="modal-close-btn" onclick="closeWithdrawModal()">&times;</button>
+      </div>
+
+      <!-- Eligibility Banner -->
+      <div id="modal-eligibility-box" style="padding: 12px; border-radius: var(--radius-md); margin-bottom: 14px; font-size: 0.82rem;">
+        <!-- Filled dynamically: Warning if tasks not completed, Success if completed -->
+      </div>
+
+      <form id="withdraw-form" onsubmit="submitWithdrawal(event)">
+        <div style="background: var(--bg-surface); padding: 12px; border-radius: var(--radius-md); margin-bottom: 14px; border: 1px solid var(--navy-border);">
+          <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">الرصيد المتاح حالياً للسحب:</span>
+          <span id="modal-available-balance" style="font-size: 1.4rem; font-weight: 800; color: var(--gold-primary);">0.00 USDT</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">مبلغ السحب:</label>
+          <input id="withdraw-amount-input" type="number" step="0.01" min="1" class="form-control" placeholder="أدخل مبلغ السحب..." required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">طريقة استلام الأموال (الخيارات المتاحة):</label>
+          <select id="withdraw-method-select" class="form-control" onchange="onPaymentMethodChange()" required>
+            <!-- Loaded dynamically from payment_methods database table -->
+          </select>
+        </div>
+
+        <div id="method-instructions-box" style="font-size: 0.75rem; color: var(--gold-primary); background: rgba(212, 175, 55, 0.08); padding: 8px 12px; border-radius: var(--radius-sm); margin-bottom: 12px; display: none;">
+          <!-- Instructions shown dynamically -->
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">بيانات الحساب / المحفظة المستلمة:</label>
+          <textarea id="withdraw-account-input" class="form-control" rows="3" placeholder="أدخل بيانات حسابك بدقة وفق تعليمات طريقة الدفع المحددة" required></textarea>
+        </div>
+
+        <button id="btn-submit-withdraw" type="submit" class="btn btn-gold btn-block">تأكيد وتقديم طلب السحب</button>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--navy-border);">
+          <span style="font-size: 0.74rem; color: var(--text-muted);">متابعة السحوبات السابقة؟</span>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeWithdrawModal(); openWithdrawHistoryModal();" style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            سجل طلبات السحب وحالتها ↗
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL: DEPOSIT REQUESTS & STATUSES HISTORY (سجل الإيداعات وحالاتها)       -->
+  <!-- ======================================================================= -->
+  <div id="deposit-history-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 520px; max-height: 85vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 class="modal-title">سجل طلبات الإيداع وحالتها</h3>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn btn-secondary btn-sm" onclick="fetchAndRenderDepositHistory(AppState.currentDepositFilter || 'ALL')" title="تحديث السجل">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            تحديث
+          </button>
+          <button class="modal-close-btn" onclick="closeDepositHistoryModal()">&times;</button>
+        </div>
+      </div>
+
+      <!-- Filters Row -->
+      <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--navy-border);">
+        <button class="btn btn-secondary btn-sm active-dep-filter btn-gold" onclick="filterDeposits('ALL', this)">الكل</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterDeposits('PENDING', this)">
+          <span class="pulse-dot"></span> قيد المراجعة
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="filterDeposits('APPROVED', this)">معتمدة ✓</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterDeposits('REJECTED', this)">مرفوضة ✕</button>
+      </div>
+
+      <!-- Deposits Container -->
+      <div id="deposit-history-list" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;">
+        <p style="text-align: center; color: var(--text-muted); padding: 30px;">جاري تحميل سجل طلبات الإيداع...</p>
+      </div>
+
+      <!-- Footer Action -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--navy-border); padding-top: 10px;">
+        <button class="btn btn-gold btn-block btn-sm" onclick="closeDepositHistoryModal(); openDepositModal();">
+          + تقديم طلب إيداع وشحن جديد
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL: WITHDRAWAL REQUESTS & STATUSES HISTORY (سجل السحوبات وحالتها)     -->
+  <!-- ======================================================================= -->
+  <div id="withdraw-history-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 520px; max-height: 85vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 class="modal-title">سجل طلبات السحب وحالتها</h3>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn btn-secondary btn-sm" onclick="fetchAndRenderWithdrawHistory(AppState.currentWithdrawFilter || 'ALL')" title="تحديث السجل">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            تحديث
+          </button>
+          <button class="modal-close-btn" onclick="closeWithdrawHistoryModal()">&times;</button>
+        </div>
+      </div>
+
+      <!-- Filters Row -->
+      <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--navy-border);">
+        <button class="btn btn-secondary btn-sm active-wdr-filter btn-gold" onclick="filterWithdrawHistory('ALL', this)">الكل</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterWithdrawHistory('PENDING', this)">
+          <span class="pulse-dot"></span> قيد المراجعة
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="filterWithdrawHistory('APPROVED', this)">معتمدة ✓</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterWithdrawHistory('REJECTED', this)">مرفوضة ✕</button>
+      </div>
+
+      <!-- Withdrawals Container -->
+      <div id="withdraw-history-list" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;">
+        <p style="text-align: center; color: var(--text-muted); padding: 30px;">جاري تحميل سجل طلبات السحب...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL: DETAILED TRANSACTIONS HISTORY (سجل المعاملات)                      -->
+  <!-- ======================================================================= -->
+  <div id="transactions-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 520px; max-height: 85vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 class="modal-title">سجل المعاملات والقيود المحاسبية</h3>
+        <button class="modal-close-btn" onclick="closeTransactionsModal()">&times;</button>
+      </div>
+
+      <!-- Filters Row -->
+      <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--navy-border);">
+        <button class="btn btn-secondary btn-sm active-tx-filter btn-gold" onclick="filterTransactions('ALL', this)">الكل</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterTransactions('COMMISSION', this)">عمولات المهام</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterTransactions('DEPOSIT', this)">إيداعات معتمدة</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterTransactions('WITHDRAWAL_REQUEST', this)">طلبات السحب</button>
+        <button class="btn btn-secondary btn-sm" onclick="filterTransactions('WITHDRAWAL_APPROVED', this)">سحوبات معتمدة</button>
+      </div>
+
+      <div id="full-transactions-list" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;">
+        <p style="text-align: center; color: var(--text-muted); padding: 30px;">جاري تحميل سجل المعاملات...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL: AUTHENTICATION (Clean Real Login / Register without admin leaks) -->
+  <!-- ======================================================================= -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div style="display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid var(--navy-border); padding-bottom: 10px;">
+        <button id="auth-tab-login" class="btn btn-secondary btn-sm active" style="flex: 1;" onclick="showAuthModal('login')">تسجيل الدخول</button>
+        <button id="auth-tab-register" class="btn btn-secondary btn-sm" style="flex: 1;" onclick="showAuthModal('register')">إنشاء حساب جديد</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="form-login" onsubmit="handleLogin(event)">
+        <!-- Suspended Account Notification Box -->
+        <div id="auth-suspended-alert" class="auth-suspended-card" style="display: none; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 1.4rem;">⚠️</span>
+            <strong style="color: #EF4444; font-size: 1rem;">تم تجميد حسابك، يرجى التواصل معنا</strong>
+          </div>
+          <p style="font-size: 0.8rem; color: #CBD5E1; margin: 0 0 12px; line-height: 1.5;">
+            تم تقييد حسابك مؤقتاً. فريق خدمة العملاء متواجد للمساعدة وفحص حسابك وإلغاء التجميد فوراً.
+          </p>
+          <button type="button" class="btn btn-gold btn-block btn-sm" onclick="openSupportForSuspendedAccount()">
+            💬 فتح محادثة مباشرة مع الدعم الفني
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني أو رقم الهاتف:</label>
+          <input id="login-email" type="text" class="form-control" placeholder="name@domain.com أو رقم الهاتف" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">كلمة المرور:</label>
+          <input id="login-password" type="password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-gold btn-block" style="margin-top: 16px;">دخول إلى المنصة</button>
+      </form>
+
+      <!-- Register Form (Real users only, 0 balance) -->
+      <form id="form-register" style="display: none;" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label">الاسم الكامل:</label>
+          <input id="reg-fullname" type="text" class="form-control" placeholder="محمد السعدي" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني:</label>
+          <input id="reg-email" type="email" class="form-control" placeholder="name@domain.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">رقم الهاتف:</label>
+          <input id="reg-phone" type="tel" class="form-control" placeholder="+964 770 000 0000" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">كلمة المرور:</label>
+          <input id="reg-password" type="password" class="form-control" placeholder="6 أحرف على الأقل" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label class="form-label">كود الإحالة (اختياري):</label>
+          <input id="reg-referral" type="text" class="form-control" placeholder="REF-XXXX">
+        </div>
+        <button type="submit" class="btn btn-gold btn-block" style="margin-top: 14px;">إنشاء وتفعيل الحساب</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- FLOATING LIVE SUPPORT BUTTON (زر خدمة العملاء العائم)                     -->
+  <!-- ======================================================================= -->
+  <button id="floating-support-btn" class="floating-support-btn" onclick="toggleSupportChatModal()" title="خدمة العملاء والدعم المباشر">
+    <div style="position: relative; display: flex; align-items: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+    </div>
+    <span class="support-pulse"></span>
+    <span class="support-text">خدمة العملاء</span>
+    <span id="support-unread-badge" class="support-badge-unread" style="display: none;">0</span>
+  </button>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL: LIVE SUPPORT CHAT (نافذة المحادثة المباشرة مع خدمة العملاء)         -->
+  <!-- ======================================================================= -->
+  <div id="support-chat-modal" class="support-chat-modal">
+    <div class="support-chat-box">
+      <!-- Header -->
+      <div class="support-chat-header">
+        <div class="support-header-info">
+          <div class="support-avatar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div>
+            <div style="font-weight: 800; font-size: 0.92rem; color: #FFFFFF;">خدمة العملاء والدعم الفني</div>
+            <div style="font-size: 0.7rem; color: #10B981; display: flex; align-items: center; gap: 4px;">
+              <span class="support-pulse" style="width: 6px; height: 6px;"></span>
+              متواجدون للمساعدة المباشرة 24/7
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="loadSupportMessages(true)" title="تحديث" style="padding: 4px 8px; font-size: 0.72rem;">⟳</button>
+          <button type="button" class="modal-close-btn" onclick="toggleSupportChatModal()" style="font-size: 1.4rem; padding: 0 4px; line-height: 1;">&times;</button>
+        </div>
+      </div>
+
+      <!-- Guest / Suspended User identifier input (if user not authenticated) -->
+      <div id="support-guest-info-row" style="display: none; padding: 8px 12px; background: rgba(15, 26, 48, 0.95); border-bottom: 1px solid var(--navy-border);">
+        <div style="display: flex; gap: 6px;">
+          <input id="support-guest-name" type="text" class="form-control" placeholder="اسمك الكريم" style="font-size: 0.76rem; padding: 6px 8px;">
+          <input id="support-guest-contact" type="text" class="form-control" placeholder="بريدك أو رقم هاتفك" style="font-size: 0.76rem; padding: 6px 8px;">
+        </div>
+      </div>
+
+      <!-- Message Bubbles Container -->
+      <div id="support-messages-wrap" class="support-messages-wrap">
+        <div class="chat-bubble support">
+          <span class="chat-bubble-sender">مساعد خدمة العملاء</span>
+          مرحباً بك! 👋 كيف يمكننا مساعدتك اليوم؟ إذا واجهت أي مشكلة في الحساب، المهام، شحن الرصيد أو السحب، يسعدنا حلها لك مباشرة.
+          <span class="chat-bubble-time">الآن</span>
+        </div>
+      </div>
+
+      <!-- Chat Footer / Input -->
+      <div class="support-chat-footer">
+        <!-- Quick Action Tags -->
+        <div class="support-quick-tags">
+          <button type="button" class="support-tag-pill" onclick="quickFillSupport('طلب فك تجميد حسابي')">🔓 طلب فك تجميد حسابي</button>
+          <button type="button" class="support-tag-pill" onclick="quickFillSupport('استفسار عن تفعيل العضوية والإيداع')">💳 تفعيل العضوية</button>
+          <button type="button" class="support-tag-pill" onclick="quickFillSupport('استفسار حول سحب الأرباح')">💰 سحب الأرباح</button>
+          <button type="button" class="support-tag-pill" onclick="quickFillSupport('مشكلة في استلام عمولة مهمة')">⚡ مشاكل المهام</button>
+        </div>
+
+        <form id="support-chat-form" onsubmit="handleSendSupportMessage(event)" class="support-input-row">
+          <input id="support-msg-input" type="text" class="support-chat-input" placeholder="اكتب استفسارك أو مشكلتك هنا..." autocomplete="off" required>
+          <button id="support-send-btn" type="submit" class="support-send-btn" title="إرسال">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div id="app-toast" class="toast-box"></div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
