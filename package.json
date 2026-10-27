@@ -9,7 +9,7 @@
     "test": "node tests/api_tests.js"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": "22.x"
   },
   "keywords": [
     "iq-vip",
